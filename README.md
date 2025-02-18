@@ -1,89 +1,125 @@
-# AI-900
-Esse repositório diz respeito ao curso da DIO AI-900 sobre inteligência artificial e ML
+Azure Machine Learning - Bike Rental Prediction
 
-As intruções seguidas foram as seguintes:
+Este repositório fornece instruções para configurar um ambiente no Azure Machine Learning e treinar um modelo de previsão de aluguel de bicicletas usando aprendizado de máquina automatizado (AutoML).
 
-Sign into the Azure portal at https://portal.azure.com using your Microsoft credentials.
+Configuraço do Ambiente no Azure
 
-Select + Create a resource, search for Machine Learning, and create a new Azure Machine Learning resource with the following settings:
-Subscription: Your Azure subscription.
-Resource group: Create or select a resource group.
-Name: Enter a unique name for your workspace.
-Region: East US.
-Storage account: Note the default new storage account that will be created for your workspace.
-Key vault: Note the default new key vault that will be created for your workspace.
-Application insights: Note the default new application insights resource that will be created for your workspace.
-Container registry: None (one will be created automatically the first time you deploy a model to a container).
-Select Review + create, then select Create. Wait for your workspace to be created (it can take a few minutes), and then go to the deployed resource.
-Launch studio
-In your Azure Machine Learning workspace resource, select Launch studio (or open a new browser tab and navigate to https://ml.azure.com, and sign into Azure Machine Learning studio using your Microsoft account). Close any messages that are displayed.
+1. Acessar o Portal do Azure
 
-In Azure Machine Learning studio, you should see your newly created workspace. If not, select All workspaces in the left-hand menu and then select the workspace you just created.
+Acesse Azure Portal e faça login com suas credenciais da Microsoft.
 
-Use automated machine learning to train a model
-Automated machine learning enables you to try multiple algorithms and parameters to train multiple models, and identify the best one for your data. In this exercise, you’ll use a dataset of historical bicycle rental details to train a model that predicts the number of bicycle rentals that should be expected on a given day, based on seasonal and meteorological features.
+Selecione + Criar um recurso e pesquise por Machine Learning.
 
-Citation: The data used in this exercise is derived from Capital Bikeshare and is used in accordance with the published data license agreement.
+Crie um novo recurso de Azure Machine Learning com as seguintes configurações:
 
-In Azure Machine Learning studio, view the Automated ML page (under Authoring).
+Assinatura: Sua assinatura do Azure.
 
-Create a new Automated ML job with the following settings, using Next as required to progress through the user interface:
+Grupo de recursos: Crie ou selecione um grupo de recursos.
 
-Basic settings:
+Nome: Escolha um nome único para seu workspace.
 
-Job name: Job name field should already be prepopulated with a unique name. Keep it as is.
-New experiment name: mslearn-bike-rental
-Description: Automated machine learning for bike rental prediction
-Tags: none
-Task type & data:
+Região: Leste dos EUA (East US).
 
-Select task type: Regression
-Select dataset: Create a new dataset with the following settings:
-Data type:
-Name: bike-rentals
-Description: Historic bike rental data
-Type: Table (mltable)
-Data source:
-Select From local files
-Destination storage type:
-Datastore type: Azure Blob Storage
-Name: workspaceblobstore
-MLtable selection:
-Upload folder: Download and unzip the folder that contains the two files you need to upload https://aka.ms/bike-rentals
-Select Create. After the dataset is created, select the bike-rentals dataset to continue to submit the Automated ML job.
+Conta de armazenamento: Aceite a conta padrão que será criada automaticamente.
 
-Task settings:
+Key Vault: Aceite o cofre de chaves padrão.
 
-Task type: Regression
-Dataset: bike-rentals
-Target column: rentals (integer)
-Additional configuration settings:
-Primary metric: NormalizedRootMeanSquaredError
-Explain best model: Unselected
-Enable ensemble stacking: Unselected
-Use all supported models: Unselected. You’ll restrict the job to try only a few specific algorithms.
-Allowed models: Select only RandomForest and LightGBM — normally you’d want to try as many as possible, but each model added increases the time it takes to run the job.
-Limits: Expand this section
-Max trials: 3
-Max concurrent trials: 3
-Max nodes: 3
-Metric score threshold: 0.085 (so that if a model achieves a normalized root mean squared error metric score of 0.085 or less, the job ends.)
-Experiment timeout: 15
-Iteration timeout: 15
-Enable early termination: Selected
-Validation and test:
-Validation type: Train-validation split
-Percentage of validation data: 10
-Test dataset: None
-Compute:
+Application Insights: Aceite a configuração padrão.
 
-Select compute type: Serverless
-Virtual machine type: CPU
-Virtual machine tier: Dedicated
-Virtual machine size: Standard_DS3_V2*
-Number of instances: 1
-* If your subscription restricts the VM sizes available to you, choose any available size.
+Registro de contêiner: Nenhum (um será criado automaticamente ao implantar um modelo).
 
-Submit the training job. It starts automatically.
+Clique em Revisar + Criar e depois em Criar. Aguarde a criação do workspace.
 
-Wait for the job to finish. It might take a while — now might be a good time for a coffee break!
+Acesse o recurso criado e clique em Launch Studio ou abra Azure Machine Learning Studio e faça login.
+
+Criando e Executando um Job de AutoML
+
+2. Criar um Job de Machine Learning Automatizado
+
+No Azure Machine Learning Studio, acesse Automated ML na guia Authoring.
+
+Crie um novo trabalho (job) com as seguintes configurações:
+
+Configurações Básicas:
+
+Nome do Job: Nome gerado automaticamente (mantenha-o).
+
+Nome do Experimento: mslearn-bike-rental
+
+Descrição: Automated machine learning for bike rental prediction
+
+Tags: Nenhuma
+
+Tipo de Tarefa e Dados:
+
+Tipo de Tarefa: Regressão
+
+Dataset: Criar um novo dataset com:
+
+Nome: bike-rentals
+
+Descrição: Historic bike rental data
+
+Tipo: Table (mltable)
+
+Fonte de Dados: From local files
+
+Destino de Armazenamento: Azure Blob Storage
+
+Nome do Datastore: workspaceblobstore
+
+Upload: Baixe e extraia os arquivos de bike-rentals dataset e envie-os.
+
+Configurações da Tarefa:
+
+Coluna Alvo: rentals
+
+Métrica Primária: NormalizedRootMeanSquaredError
+
+Modelos Permitidos: RandomForest, LightGBM
+
+Limites:
+
+Máximo de Testes: 3
+
+Testes Concorrentes: 3
+
+Nós Máximos: 3
+
+Threshold de Métrica: 0.085
+
+Timeout do Experimento: 15 minutos
+
+Timeout de Iteração: 15 minutos
+
+Early Termination: Ativado
+
+Validação e Teste:
+
+Tipo de Validação: Train-validation split
+
+Percentual de Validação: 10%
+
+Dataset de Teste: Nenhum
+
+Computação:
+
+Tipo de Computação: Serverless
+
+Tipo de VM: CPU
+
+Tier da VM: Dedicated
+
+Tamanho da VM: Standard_DS3_V2*
+
+Número de Instâncias: 1
+
+Se a assinatura não permitir esse tamanho de VM, escolha outro disponível.
+
+3. Submeter o Job e Aguardar a Execução
+
+Envie o trabalho de treinamento. Ele iniciará automaticamente.
+
+Aguarde a conclusão do processo (pode levar alguns minutos).
+
+Agora você está pronto para analisar os resultados e usar o modelo treinado! 🚀
